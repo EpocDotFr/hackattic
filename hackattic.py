@@ -11,9 +11,10 @@ class Problem:
     PROBLEM_URL = 'https://hackattic.com/challenges/{problem_id}/problem'
     SOLVE_URL = 'https://hackattic.com/challenges/{problem_id}/solve'
 
-    def __init__(self, problem_id, access_token=None):
+    def __init__(self, problem_id, access_token=None, playground=False):
         self.problem_id = problem_id
         self.access_token = access_token or env.str('ACCESS_TOKEN')
+        self.playground = playground
 
     def fetch(self):
         return self.call(
@@ -32,6 +33,9 @@ class Problem:
         params = {
             'access_token': self.access_token,
         }
+
+        if self.playground:
+            params['playground'] = 'yes'
 
         response = requests.request(method, url, params=params, json=json)
         response.raise_for_status()
