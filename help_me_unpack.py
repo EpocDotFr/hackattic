@@ -3,14 +3,14 @@ import hackattic
 import base64
 import io
 
-challenge = hackattic.Challenge('help_me_unpack')
+problem = hackattic.Problem('help_me_unpack')
 
-problem = challenge.fetch()
+data = problem.fetch()
 
 solution = {}
 
-with io.BytesIO(base64.b64decode(problem['bytes'])) as f:
-    ds = DataStream(f, DataStream.BSA_NETWORK)
+with io.BytesIO(base64.b64decode(data['bytes'])) as f:
+    ds = DataStream(f)
 
     solution['int'] = ds.read_int32()
     solution['uint'] = ds.read_uint32()
@@ -19,4 +19,4 @@ with io.BytesIO(base64.b64decode(problem['bytes'])) as f:
     solution['double'] = ds.read_double()
     solution['big_endian_double'] = ds.read_double()
 
-print(challenge.solve(solution))
+print(problem.solve(solution))

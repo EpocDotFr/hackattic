@@ -3,32 +3,28 @@ import requests
 
 requests = requests.Session()
 
+env = Env()
+env.read_env()
 
-class Challenge:
-    CHALLENGES_PROBLEM_URL = 'https://hackattic.com/challenges/{challenge_id}/problem'
-    CHALLENGES_SOLVE_URL = 'https://hackattic.com/challenges/{challenge_id}/solve'
 
-    def __init__(self, challenge_id, access_token=None):
-        self.challenge_id = challenge_id
+class Problem:
+    PROBLEM_URL = 'https://hackattic.com/challenges/{problem_id}/problem'
+    SOLVE_URL = 'https://hackattic.com/challenges/{problem_id}/solve'
 
-        if not access_token:
-            env = Env()
-            env.read_env()
-
-            self.access_token = env.str('ACCESS_TOKEN')
-        else:
-            self.access_token = None
+    def __init__(self, problem_id, access_token=None):
+        self.problem_id = problem_id
+        self.access_token = access_token or env.str('ACCESS_TOKEN')
 
     def fetch(self):
         return self.call(
             'GET',
-            self.CHALLENGES_PROBLEM_URL.format(challenge_id=self.challenge_id)
+            self.PROBLEM_URL.format(problem_id=self.problem_id)
         )
 
     def solve(self, json):
         return self.call(
             'POST',
-            self.CHALLENGES_SOLVE_URL.format(challenge_id=self.challenge_id),
+            self.SOLVE_URL.format(problem_id=self.problem_id),
             json=json
         )
 

@@ -18,5 +18,5 @@ Copy the `.env.example` file to `.env` and fill in the configuration parameters 
 
 ## Usage
 
-Simply execute one of the scripts named after the corresponding challenge (e.g `python help_me_unpack.py`). Note that
+Simply execute one of the scripts named after the corresponding problem (e.g `python help_me_unpack.py`). Note that
 some may be placed in folders with the same name, for clarity purposes.
