@@ -21,8 +21,6 @@ with io.BytesIO(base64.b64decode(data['bytes'])) as f:
     solution['float'] = ds.read_float()
     solution['double'] = ds.read_double()
 
-    ds.default_bsa = DataStream.BSA_BIG_ENDIAN
-
-    solution['big_endian_double'] = ds.read_double()
+    solution['big_endian_double'] = ds.read_double(bsa=DataStream.BSA_BIG_ENDIAN)
 
 print(problem.solve(solution))
