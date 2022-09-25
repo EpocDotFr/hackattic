@@ -6,6 +6,16 @@ import hackattic
 import psycopg2
 import tempfile
 import base64
+import os
+
+PG_DB = 'postgres'
+PG_USERNAME = 'postgres'
+PG_PASSWORD = 'postgres'
+
+
+def run_subprocess(arguments):
+    subprocess.run(arguments, check=True)
+
 
 problem = hackattic.Problem('backup_restore')
 
@@ -16,10 +26,33 @@ with tempfile.NamedTemporaryFile('wb', delete=False, suffix='.sql.gz') as f:
 
     dump_path = f.name
 
-print(dump_path)
+run_subprocess((
+    'gunzip',
+    '-d',
+    dump_path
+))
 
-# gunzip -d /tmp/name.sql.gz
-# => /tmp/name.sql
+dump_path = dump_path.replace('.gz', '')
+
+os.putenv('PGPASSWORD', PG_PASSWORD)
+
+run_subprocess((
+    'psql',
+    PG_DB,
+    '-U',
+    PG_USERNAME,
+    '-c',
+    'DROP TABLE IF EXISTS criminal_records'
+))
+
+run_subprocess((
+    'psql',
+    PG_DB,
+    '-U',
+    PG_USERNAME,
+    '-f',
+    dump_path
+))
 
 solution = {
     'alive_ssns': [],
