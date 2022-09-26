@@ -1,7 +1,7 @@
 # This script requires:
-#   - extra Python packages: pip install pyzbar pillow (see package's installation instructions as it has a system dependency)
-from PIL import Image
+#   - extra Python packages: pip install pyzbar pillow
 from pyzbar import pyzbar
+from PIL import Image
 import hackattic
 import tempfile
 import requests
