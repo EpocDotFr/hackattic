@@ -8,6 +8,8 @@ import tempfile
 import base64
 import os
 
+PG_HOST = 'localhost'
+PG_PORT = 5432
 PG_DB = 'postgres'
 PG_USERNAME = 'postgres'
 PG_PASSWORD = 'postgres'
@@ -36,6 +38,10 @@ def restore_db(dump):
     run_subprocess((
         'psql',
         PG_DB,
+        '-h',
+        PG_HOST,
+        '-p',
+        PG_PORT,
         '-U',
         PG_USERNAME,
         '-c',
@@ -45,6 +51,10 @@ def restore_db(dump):
     run_subprocess((
         'psql',
         PG_DB,
+        '-h',
+        PG_HOST,
+        '-p',
+        PG_PORT,
         '-U',
         PG_USERNAME,
         '-f',
@@ -53,7 +63,7 @@ def restore_db(dump):
 
 
 def extract_alive_ssns():
-    conn = psycopg2.connect(dbname=PG_DB, user=PG_USERNAME, password=PG_PASSWORD)
+    conn = psycopg2.connect(host=PG_HOST, port=PG_PORT, dbname=PG_DB, user=PG_USERNAME, password=PG_PASSWORD)
     cur = conn.cursor()
 
     cur.execute("SELECT ssn FROM criminal_records WHERE status = 'alive';")
