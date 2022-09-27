@@ -1,5 +1,7 @@
 # hackattic
 
+<img src="https://hackattic.com/static/core/h%5E.png" align="right">
+
 Source code of my solutions to the [hackattic](https://hackattic.com/) challenges.
 
 ## Prerequisites
