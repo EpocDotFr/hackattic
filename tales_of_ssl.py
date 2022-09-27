@@ -8,6 +8,7 @@ import hackattic
 import datetime
 import base64
 
+
 def get_country_code(country):
     if country == 'Tokelau Islands':
         return 'TK'
@@ -19,6 +20,7 @@ def get_country_code(country):
         return 'SX'
 
     return None
+
 
 problem = hackattic.Problem('tales_of_ssl')
 

@@ -1,20 +1,31 @@
 # This script requires:
 #   - extra Python packages: pip install pyjwt
+#   - PORT to be forwarded for TCP trafic on your router to the machine running this script
 from http import HTTPStatus
 import urllib.parse
 import http.server
 import hackattic
+import threading
+import json
 import jwt
-import io
 
 BIND_IP = '0.0.0.0'
-PUBLIC_IP = ''
-PORT = 8080
+PUBLIC_IP = '123.123.123.123'
+PORT = 18080
 
 
 class JottingJwtsServer(http.server.ThreadingHTTPServer):
     allow_reuse_address = True
-    daemon_threads = True
+
+    def __init__(self, *args, jwt_secret=None, **kvargs):
+        super(JottingJwtsServer, self).__init__(*args, **kvargs)
+
+        self.jwt_secret = jwt_secret
+        self.append = ''
+        self.ready_event = threading.Event()
+
+    def service_actions(self):
+        self.ready_event.set()
 
 
 class JottingJwtsHandler(http.server.BaseHTTPRequestHandler):
@@ -25,13 +36,35 @@ class JottingJwtsHandler(http.server.BaseHTTPRequestHandler):
             self.send_error(HTTPStatus.NOT_FOUND)
 
             return
+        elif 'content-length' not in self.headers:
+            self.send_error(HTTPStatus.LENGTH_REQUIRED)
 
-        self.send_response(200)
+            return
 
-        self.send_header('Content-Type', 'text/plain; charset=utf-8')
-        self.end_headers()
+        content_length = int(self.headers.get('content-length'))
 
-        self.wfile.write('Hello'.encode('utf-8'))
+        encoded_jwt = self.rfile.read(content_length)
+
+        try:
+            decoded_jwt = jwt.decode(encoded_jwt, self.server.jwt_secret, algorithms='HS256')
+        except:
+            self.send_error(HTTPStatus.BAD_REQUEST)
+
+            return
+
+        if 'append' in decoded_jwt:
+            self.server.append += decoded_jwt['append']
+
+            self.send_error(HTTPStatus.NO_CONTENT)
+        else:
+            self.send_response(200)
+
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.end_headers()
+
+            self.wfile.write(json.dumps({
+                'solution': self.server.append
+            }).encode('utf-8'))
 
     def do_GET(self):
         self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
@@ -52,23 +85,20 @@ class JottingJwtsHandler(http.server.BaseHTTPRequestHandler):
         self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
 
 
-def run_http_server():
-    with JottingJwtsServer((BIND_IP, PORT), JottingJwtsHandler) as server:
-        try:
-            server.serve_forever()
-        except KeyboardInterrupt:
-            pass
-
 problem = hackattic.Problem('jotting_jwts')
 
 data = problem.fetch()
 
-jwt_secret = data['jwt_secret']
+with JottingJwtsServer((BIND_IP, PORT), JottingJwtsHandler, jwt_secret=data['jwt_secret']) as server:
+    try:
+        threading.Thread(target=server.serve_forever, daemon=True).start()
 
-solution = {
-    'app_url': f'http://{PUBLIC_IP}:{PORT}/'
-}
+        server.ready_event.wait()
 
-print(problem.solve(solution))
+        solution = {
+            'app_url': f'http://{PUBLIC_IP}:{PORT}/'
+        }
 
-run_http_server()
+        print(problem.solve(solution))
+    except KeyboardInterrupt:
+        pass
