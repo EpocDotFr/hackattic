@@ -1,8 +1,6 @@
-# This script requires:
-#   - extra Python packages: pip install pyzbar pillow
+from support import hackattic
 from pyzbar import pyzbar
 from PIL import Image
-import hackattic
 import tempfile
 import requests
 

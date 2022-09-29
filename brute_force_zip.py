@@ -1,5 +1,5 @@
+from support import hackattic
 import itertools
-import hackattic
 import requests
 import tempfile
 import zipfile

@@ -1,4 +1,4 @@
-import hackattic
+from support import hackattic
 import binascii
 import hashlib
 import base64

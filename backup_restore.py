@@ -1,8 +1,6 @@
-# This script requires:
-#   - a running PostgreSQL database: https://www.postgresql.org/download/ (edit credentials below)
-#   - extra Python packages: pip install psycopg2-binary
+# This script requires a running PostgreSQL database: https://www.postgresql.org/download/ (edit credentials below)
+from support import hackattic
 import subprocess
-import hackattic
 import psycopg2
 import tempfile
 import base64

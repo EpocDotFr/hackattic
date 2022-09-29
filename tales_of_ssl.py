@@ -1,10 +1,8 @@
-# This script requires:
-#   - extra Python packages: pip install cryptography
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.x509.oid import NameOID
 from cryptography import x509
-import hackattic
+from support import hackattic
 import datetime
 import base64
 

@@ -1,5 +1,5 @@
-from data_stream import DataStream
-import hackattic
+from support.data_stream import DataStream
+from support import hackattic
 import base64
 import io
 

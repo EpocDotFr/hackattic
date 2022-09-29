@@ -1,16 +1,13 @@
-# This script requires:
-#   - extra Python packages: pip install pyjwt
-#   - PORT to be forwarded for TCP trafic on your router to the machine running this script
+# This script requires PORT to be forwarded for TCP trafic on your router to the machine running this script
+from support import hackattic
 from http import HTTPStatus
 import urllib.parse
 import http.server
-import hackattic
 import threading
 import json
 import jwt
 
-BIND_IP = '0.0.0.0'
-PUBLIC_IP = '123.123.123.123'
+IP = '0.0.0.0'
 PORT = 18080
 
 
@@ -89,14 +86,14 @@ problem = hackattic.Problem('jotting_jwts')
 
 data = problem.fetch()
 
-with JottingJwtsServer((BIND_IP, PORT), JottingJwtsHandler, jwt_secret=data['jwt_secret']) as server:
+with JottingJwtsServer((IP, PORT), JottingJwtsHandler, jwt_secret=data['jwt_secret']) as server:
     try:
         threading.Thread(target=server.serve_forever, daemon=True).start()
 
         server.ready_event.wait()
 
         solution = {
-            'app_url': f'http://{PUBLIC_IP}:{PORT}/'
+            'app_url': 'http://{}:{}/'.format(hackattic.env.str('PUBLIC_IP'), PORT)
         }
 
         print(problem.solve(solution))

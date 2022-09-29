@@ -1,2 +1,7 @@
 requests
 environs
+psycopg2-binary
+pyjwt
+pyzbar
+pillow
+cryptography
