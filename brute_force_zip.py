@@ -1,22 +1,7 @@
-from support import hackattic
+from support import hackattic, download_file
 import itertools
-import requests
-import tempfile
 import zipfile
 import string
-
-requests = requests.Session()
-
-
-def download_zip(zip_url):
-    response = requests.get(zip_url, stream=True)
-    response.raise_for_status()
-
-    with tempfile.NamedTemporaryFile('wb', delete=False, suffix='.zip') as f:
-        for chunk in response.iter_content(512):
-            f.write(chunk)
-
-        return f.name
 
 
 def brute_force_zip(zip_path):
@@ -40,7 +25,7 @@ problem = hackattic.Problem('brute_force_zip')
 
 data = problem.fetch()
 
-zip_path = download_zip(data['zip_url'])
+zip_path = download_file(data['zip_url'], '.zip')
 
 solution = {
     'secret': brute_force_zip(zip_path)

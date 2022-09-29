@@ -1,26 +1,23 @@
-from support.data_stream import DataStream
 from support import hackattic
+import struct
 import base64
-import io
 
 problem = hackattic.Problem('help_me_unpack')
 
 data = problem.fetch()
 
-solution = {}
+decoded_bytes = base64.b64decode(data['bytes'])
 
-with io.BytesIO(base64.b64decode(data['bytes'])) as f:
-    ds = DataStream(f, DataStream.BSA_LITTLE_ENDIAN)
+i, ui, s, f, d = struct.unpack('<iIhxxfd', decoded_bytes[:24])
+bed, = struct.unpack('>d', decoded_bytes[24:])
 
-    solution['int'] = ds.read_int32()
-    solution['uint'] = ds.read_uint32()
-    solution['short'] = ds.read_int16()
-
-    ds.read_bytes(2)
-
-    solution['float'] = ds.read_float()
-    solution['double'] = ds.read_double()
-
-    solution['big_endian_double'] = ds.read_double(bsa=DataStream.BSA_BIG_ENDIAN)
+solution = {
+    'int': i,
+    'uint': ui,
+    'short': s,
+    'float': f,
+    'double': d,
+    'big_endian_double': bed,
+}
 
 print(problem.solve(solution))

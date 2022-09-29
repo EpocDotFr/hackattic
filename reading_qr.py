@@ -1,21 +1,6 @@
-from support import hackattic
+from support import hackattic, download_file
 from pyzbar import pyzbar
 from PIL import Image
-import tempfile
-import requests
-
-requests = requests.Session()
-
-
-def download_image(image_url):
-    response = requests.get(image_url, stream=True)
-    response.raise_for_status()
-
-    with tempfile.NamedTemporaryFile('wb', delete=False, suffix='.png') as f:
-        for chunk in response.iter_content(512):
-            f.write(chunk)
-
-        return f.name
 
 
 def decode_image(path):
@@ -33,7 +18,7 @@ problem = hackattic.Problem('reading_qr')
 
 data = problem.fetch()
 
-image_path = download_image(data['image_url'])
+image_path = download_file(data['image_url'], '.png')
 
 solution = {
     'code': decode_image(image_path)

@@ -1,6 +1,5 @@
 # This script requires a running PostgreSQL database: https://www.postgresql.org/download/ (edit credentials below)
-from support import hackattic
-import subprocess
+from support import hackattic, run_subprocess
 import psycopg2
 import tempfile
 import base64
@@ -11,10 +10,6 @@ PG_PORT = 5432
 PG_DB = 'postgres'
 PG_USERNAME = 'postgres'
 PG_PASSWORD = 'postgres'
-
-
-def run_subprocess(arguments):
-    subprocess.run(arguments, check=True)
 
 
 def restore_db(dump):
@@ -39,7 +34,7 @@ def restore_db(dump):
         '-h',
         PG_HOST,
         '-p',
-        PG_PORT,
+        str(PG_PORT),
         '-U',
         PG_USERNAME,
         '-c',
@@ -52,7 +47,7 @@ def restore_db(dump):
         '-h',
         PG_HOST,
         '-p',
-        PG_PORT,
+        str(PG_PORT),
         '-U',
         PG_USERNAME,
         '-f',
