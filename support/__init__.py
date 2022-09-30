@@ -1,10 +1,5 @@
 from .hackattic import requests
-import subprocess
 import tempfile
-
-
-def run_subprocess(arguments):
-    subprocess.run(arguments, check=True)
 
 
 def download_file(url, suffix=''):

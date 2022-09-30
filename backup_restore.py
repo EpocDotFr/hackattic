@@ -1,9 +1,10 @@
 # This script requires a running PostgreSQL database: https://www.postgresql.org/download/ (edit credentials below)
-from support import hackattic, run_subprocess
+from support import hackattic
 import psycopg2
 import tempfile
 import base64
 import os
+import sh
 
 PG_HOST = 'localhost'
 PG_PORT = 5432
@@ -17,42 +18,15 @@ def restore_db(dump):
         f.write(base64.b64decode(dump))
 
         dump_path = f.name
-
-    run_subprocess((
-        'gunzip',
-        '-d',
-        dump_path
-    ))
+    
+    sh.gunzip(dump_path, d=True)
 
     dump_path = dump_path.replace('.gz', '')
 
     os.putenv('PGPASSWORD', PG_PASSWORD)
 
-    run_subprocess((
-        'psql',
-        PG_DB,
-        '-h',
-        PG_HOST,
-        '-p',
-        str(PG_PORT),
-        '-U',
-        PG_USERNAME,
-        '-c',
-        'DROP TABLE IF EXISTS criminal_records'
-    ))
-
-    run_subprocess((
-        'psql',
-        PG_DB,
-        '-h',
-        PG_HOST,
-        '-p',
-        str(PG_PORT),
-        '-U',
-        PG_USERNAME,
-        '-f',
-        dump_path
-    ))
+    sh.psql(PG_DB, h=PG_HOST, p=str(PG_PORT), U=PG_USERNAME, c='DROP TABLE IF EXISTS criminal_records')
+    sh.psql(PG_DB, h=PG_HOST, p=str(PG_PORT), U=PG_USERNAME, f=dump_path)
 
 
 def extract_alive_ssns():

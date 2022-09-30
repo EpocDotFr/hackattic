@@ -5,3 +5,4 @@ pyjwt
 pyzbar
 pillow
 cryptography
+sh
