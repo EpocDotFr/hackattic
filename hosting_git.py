@@ -1,5 +1,6 @@
 from support import hackattic
 import sh
+import io
 
 problem = hackattic.Problem('hosting_git')
 
@@ -33,12 +34,21 @@ with sh.contrib.sudo:
     sh.git.init(repo_path, bare=True)
     sh.chown(f'{username}:{username}', repo_path, R=True)
 
-response = hackattic.requests.post(f'https://hackattic.com/_/git/{push_token}', json={'repo_host': hackattic.env.str('PUBLIC_IP')})
-response.raise_for_status()
+    response = hackattic.requests.post(f'https://hackattic.com/_/git/{push_token}', json={'repo_host': hackattic.env.str('PUBLIC_IP')})
+    response.raise_for_status()
 
-with open(f'{repo_path}/solution.txt', 'r') as f:
-    solution = {
-        'secret': f.read()
-    }
+    sh.cd(repo_path)
 
-print(problem.solve(solution))
+    # Don't know how to run commands as another user using sh so use this hack
+    sh.git.config('--global', '--add', 'safe.directory', repo_path)
+
+    with io.StringIO() as f:
+        sh.git.show('master:solution.txt', no_color=True, _out=f)
+
+        f.seek(0)
+
+        solution = {
+            'secret': f.read()
+        }
+
+    print(problem.solve(solution))
