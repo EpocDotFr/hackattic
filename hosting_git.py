@@ -1,4 +1,4 @@
-from support import hackattic, requests
+from support import hackattic
 import sh
 
 problem = hackattic.Problem('hosting_git')
@@ -33,7 +33,7 @@ with sh.contrib.sudo:
     sh.git.init(repo_path, bare=True)
     sh.chown(f'{username}:{username}', repo_path, R=True)
 
-response = requests.post(f'https://hackattic.com/_/git/{push_token}', json={'repo_host': hackattic.env.str('PUBLIC_IP')})
+response = hackattic.requests.post(f'https://hackattic.com/_/git/{push_token}', json={'repo_host': hackattic.env.str('PUBLIC_IP')})
 response.raise_for_status()
 
 with open(f'{repo_path}/solution.txt', 'r') as f:
