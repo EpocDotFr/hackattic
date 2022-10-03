@@ -6,3 +6,6 @@ pyzbar
 pillow
 cryptography
 sh
+pyopenssl
+service-identity
+autobahn[twisted]
