@@ -1,4 +1,4 @@
-# Ths script requires the current user to be sudoer (https://amoffat.github.io/sh/sections/sudo.html#etc-sudoers-nopasswd)
+# This script requires the current user to be sudoer (https://amoffat.github.io/sh/sections/sudo.html#etc-sudoers-nopasswd)
 from support import hackattic
 import sh
 
