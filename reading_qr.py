@@ -1,3 +1,4 @@
+# This script requires zbar to be installed on your system (https://github.com/NaturalHistoryMuseum/pyzbar#installation)
 from support import hackattic, download_file
 from pyzbar import pyzbar
 from PIL import Image

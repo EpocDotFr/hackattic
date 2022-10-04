@@ -9,3 +9,4 @@ sh
 pyopenssl
 service-identity
 autobahn[twisted]
+pytesseract
