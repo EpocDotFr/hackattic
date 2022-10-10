@@ -21,16 +21,21 @@ def brute_force_zip(zip_path):
     return ''
 
 
-problem = hackattic.Problem('brute_force_zip')
+def run():
+    problem = hackattic.Problem('brute_force_zip')
 
-data = problem.fetch()
+    data = problem.fetch()
 
-zip_path = download_file(data['zip_url'], '.zip')
+    zip_path = download_file(data['zip_url'], '.zip')
 
-solution = {
-    'secret': brute_force_zip(zip_path)
-}
+    solution = {
+        'secret': brute_force_zip(zip_path)
+    }
 
-print(solution)
+    print(solution)
 
-# print(problem.solve(solution))
+    # print(problem.solve(solution))
+
+
+if __name__ == '__main__':
+    run()

@@ -15,14 +15,19 @@ def decode_image(path):
     return None
 
 
-problem = hackattic.Problem('reading_qr')
+def run():
+    problem = hackattic.Problem('reading_qr')
 
-data = problem.fetch()
+    data = problem.fetch()
 
-image_path = download_file(data['image_url'], '.png')
+    image_path = download_file(data['image_url'], '.png')
 
-solution = {
-    'code': decode_image(image_path)
-}
+    solution = {
+        'code': decode_image(image_path)
+    }
 
-print(problem.solve(solution))
+    print(problem.solve(solution))
+
+
+if __name__ == '__main__':
+    run()

@@ -82,20 +82,25 @@ class JottingJwtsHandler(http.server.BaseHTTPRequestHandler):
         self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
 
 
-problem = hackattic.Problem('jotting_jwts')
+def run():
+    problem = hackattic.Problem('jotting_jwts')
 
-data = problem.fetch()
+    data = problem.fetch()
 
-with JottingJwtsServer((IP, PORT), JottingJwtsHandler, jwt_secret=data['jwt_secret']) as server:
-    try:
-        threading.Thread(target=server.serve_forever, daemon=True).start()
+    with JottingJwtsServer((IP, PORT), JottingJwtsHandler, jwt_secret=data['jwt_secret']) as server:
+        try:
+            threading.Thread(target=server.serve_forever, daemon=True).start()
 
-        server.ready_event.wait()
+            server.ready_event.wait()
 
-        solution = {
-            'app_url': 'http://{}:{}/'.format(hackattic.env.str('PUBLIC_IP'), PORT)
-        }
+            solution = {
+                'app_url': 'http://{}:{}/'.format(hackattic.env.str('PUBLIC_IP'), PORT)
+            }
 
-        print(problem.solve(solution))
-    except KeyboardInterrupt:
-        pass
+            print(problem.solve(solution))
+        except KeyboardInterrupt:
+            pass
+
+
+if __name__ == '__main__':
+    run()

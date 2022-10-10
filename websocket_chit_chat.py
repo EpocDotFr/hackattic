@@ -53,15 +53,20 @@ class WebsocketChitChatClientProtocol(websocket.WebSocketClientProtocol):
         return int(time.time() * 1000)
 
 
-problem = hackattic.Problem('websocket_chit_chat')
+def run():
+    problem = hackattic.Problem('websocket_chit_chat')
 
-data = problem.fetch()
+    data = problem.fetch()
 
-token = data['token']
+    token = data['token']
 
-factory = websocket.WebSocketClientFactory(f'wss://hackattic.com/_/ws/{token}')
-factory.protocol = WebsocketChitChatClientProtocol
+    factory = websocket.WebSocketClientFactory(f'wss://hackattic.com/_/ws/{token}')
+    factory.protocol = WebsocketChitChatClientProtocol
 
-websocket.connectWS(factory, ssl.ClientContextFactory())
+    websocket.connectWS(factory, ssl.ClientContextFactory())
 
-reactor.run()
+    reactor.run()
+
+
+if __name__ == '__main__':
+    run()

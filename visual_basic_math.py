@@ -7,18 +7,23 @@ def read_and_calculate(image_path):
     return pytesseract.image_to_string(image_path)
 
 
-problem = hackattic.Problem('visual_basic_math')
+def run():
+    problem = hackattic.Problem('visual_basic_math')
 
-data = problem.fetch()
+    data = problem.fetch()
 
-image_path = download_file(data['image_url'], '.png')
+    image_path = download_file(data['image_url'], '.png')
 
-print(image_path)
+    print(image_path)
 
-solution = {
-    'result': read_and_calculate(image_path)
-}
+    solution = {
+        'result': read_and_calculate(image_path)
+    }
 
-print(solution['result'])
+    print(solution['result'])
 
-# print(problem.solve(solution))
+    # print(problem.solve(solution))
+
+
+if __name__ == '__main__':
+    run()

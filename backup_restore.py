@@ -45,14 +45,19 @@ def extract_alive_ssns():
     return ret
 
 
-problem = hackattic.Problem('backup_restore')
+def run():
+    problem = hackattic.Problem('backup_restore')
 
-data = problem.fetch()
+    data = problem.fetch()
 
-restore_db(data['dump'])
+    restore_db(data['dump'])
 
-solution = {
-    'alive_ssns': extract_alive_ssns(),
-}
+    solution = {
+        'alive_ssns': extract_alive_ssns(),
+    }
 
-print(problem.solve(solution))
+    print(problem.solve(solution))
+
+
+if __name__ == '__main__':
+    run()
