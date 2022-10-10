@@ -14,7 +14,7 @@ Clone this repo, and then the usual `pip install -r requirements.txt`.
 
 ## Configuration
 
-Copy the `.env.example` file to `.env` and fill in the configuration parameters:
+Either set the following environment variables or copy the `.env.example` file to `.env`:
 
 | Name           | Type | Required?  | Default | Description                                                                                            |
 |----------------|------|------------|---------|--------------------------------------------------------------------------------------------------------|
