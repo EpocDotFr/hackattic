@@ -10,3 +10,4 @@ pyopenssl
 service-identity
 autobahn[twisted]
 pytesseract
+bitstring
