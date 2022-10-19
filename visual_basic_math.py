@@ -4,7 +4,26 @@ import pytesseract
 
 
 def read_and_calculate(image_path):
-    return pytesseract.image_to_string(image_path)
+    operations = pytesseract.image_to_string(image_path, config='--psm 6')
+
+    result = 0
+
+    for operation in operations.splitlines():
+        operation = operation.replace(' ', '').strip()
+
+        symbol = operation[0]
+        number = int(operation[1:])
+
+        if symbol == '+':
+            result += number
+        elif symbol == '-':
+            result -= number
+        elif symbol in 'x':
+            result *= number
+        elif symbol == '÷':
+            result //= number
+
+    return result
 
 
 def run():
@@ -20,7 +39,7 @@ def run():
         'result': read_and_calculate(image_path)
     }
 
-    print(solution['result'])
+    print(solution)
 
     # print(problem.solve(solution))
 
