@@ -1,24 +1,35 @@
 from support import hackattic, download_file
+import threading
 import itertools
 import zipfile
 import string
+import queue
 
 
-def brute_force_zip(zip_path):
+def add_passwords_to_queue(passwords):
     charset = string.ascii_lowercase + string.digits
 
-    with zipfile.ZipFile(zip_path) as zf:
-        for length in range(4, 7):
-            for combination in itertools.product(charset, repeat=length):
-                try:
-                    return zf.read(
-                        'secret.txt',
-                        pwd=''.join(combination).encode()
-                    )
-                except (RuntimeError, zipfile.BadZipFile):
-                    continue
+    for length in range(4, 7):
+        for combination in itertools.product(charset, repeat=length):
+            passwords.put(''.join(combination).encode())
 
-    return ''
+
+def brute_force_zip(passwords, zf):
+    while not passwords.empty():
+        try:
+            secret = zf.read(
+                'secret.txt',
+                pwd=passwords.get()
+            )
+
+            print(f'FOUND: {secret}')
+
+            with passwords.mutex:
+                passwords.queue.clear()
+
+            return secret
+        except (RuntimeError, zipfile.BadZipFile):
+            pass
 
 
 def run():
@@ -28,9 +39,27 @@ def run():
 
     zip_path = download_file(data['zip_url'], '.zip')
 
+    passwords = queue.Queue()
+
+    add_passwords_to_queue(passwords)
+
+    zf = zipfile.ZipFile(zip_path)
+
+    threads = []
+
+    for i in range(1, 6):
+        thread = threading.Thread(target=brute_force_zip, args=(passwords, zf), daemon=True)
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
     solution = {
-        'secret': brute_force_zip(zip_path)
+        'secret': 'TODO'
     }
+
+    zf.close()
 
     print(solution)
 
