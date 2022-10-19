@@ -18,7 +18,7 @@ def read_and_calculate(image_path):
             result += number
         elif symbol == '-':
             result -= number
-        elif symbol in 'x':
+        elif symbol == 'x':
             result *= number
         elif symbol == '÷':
             result //= number
