@@ -1,3 +1,4 @@
+# This challenge is WIP
 # This script requires tesseract to be installed on your system (https://tesseract-ocr.github.io/tessdoc/Installation.html#installation)
 from support import hackattic, download_file
 import pytesseract
