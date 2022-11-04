@@ -1,3 +1,4 @@
+# This challenge is WIP
 from support import hackattic
 import threading
 import tempfile
@@ -6,6 +7,17 @@ import os
 
 IP = '0.0.0.0'
 PORT = 18080
+
+
+def request_validation(server_is_running, problem):
+    server_is_running.wait()
+
+    solution = {
+        'tftp_host': hackattic.env.str('PUBLIC_IP'),
+        'tftp_port': PORT,
+    }
+
+    print(problem.solve(solution))
 
 
 def run():
@@ -21,19 +33,12 @@ def run():
         with open(os.path.join(tmdir.name, filename), 'w') as f:
             f.write(filecontent)
 
-    print(tmdir.name)
-
     server = tftpy.TftpServer(tmdir.name)
 
     try:
-        threading.Thread(target=server.listen, args=(IP, PORT), daemon=True).start()
+        threading.Thread(target=request_validation, args=(server.is_running, problem), daemon=True).start()
 
-        solution = {
-            'tftp_host': hackattic.env.str('PUBLIC_IP'),
-            'tftp_port': PORT,
-        }
-
-        print(problem.solve(solution))
+        server.listen(IP, PORT)
     except KeyboardInterrupt:
         pass
 
