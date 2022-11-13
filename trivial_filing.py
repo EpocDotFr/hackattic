@@ -1,23 +1,23 @@
-# This challenge is WIP
+from ptftplib import tftpserver
 from support import hackattic
 import threading
 import tempfile
-import tftpy
 import os
 
-IP = '0.0.0.0'
+IFACE = 'wlp0s20f3'
 PORT = 18080
 
 
-def request_validation(server_is_running, problem):
-    server_is_running.wait()
+class TrivialFillingTFTPServer(tftpserver.TFTPServer):
+    def __init__(self, *args, **kvargs):
+        super(TrivialFillingTFTPServer, self).__init__(*args, **kvargs)
 
-    solution = {
-        'tftp_host': hackattic.env.str('PUBLIC_IP'),
-        'tftp_port': PORT,
-    }
+        self.ready_event = threading.Event()
 
-    print(problem.solve(solution))
+    def serve_forever(self):
+        self.ready_event.set()
+
+        super(TrivialFillingTFTPServer, self).serve_forever()
 
 
 def run():
@@ -33,12 +33,19 @@ def run():
         with open(os.path.join(tmdir.name, filename), 'w') as f:
             f.write(filecontent)
 
-    server = tftpy.TftpServer(tmdir.name)
+    server = TrivialFillingTFTPServer(IFACE, tmdir.name, PORT)
 
     try:
-        threading.Thread(target=request_validation, args=(server.is_running, problem), daemon=True).start()
+        threading.Thread(target=server.serve_forever, daemon=True).start()
 
-        server.listen(IP, PORT)
+        server.ready_event.wait()
+
+        solution = {
+            'tftp_host': hackattic.env.str('PUBLIC_IP'),
+            'tftp_port': PORT,
+        }
+
+        print(problem.solve(solution))
     except KeyboardInterrupt:
         pass
 
