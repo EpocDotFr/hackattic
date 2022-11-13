@@ -3,7 +3,6 @@
 from dnslib.zoneresolver import ZoneResolver
 from dnslib.server import DNSServer
 from support import hackattic
-import io
 
 IP = '0.0.0.0'
 PORT = 18080
@@ -14,25 +13,33 @@ def run():
 
     data = problem.fetch()
 
-    records = data['records']
+    records_raw = data['records']
+    records_by_type = {
+        record['type']: record for record in records_raw
+    }
 
-    zone = ''
+    zone = []
 
-    for record in records:
+    for type_, record in records_by_type.items():
         name = record['name']
-        type_ = record['type']
         data = record['data']
 
         if type_ == 'TXT':
             data = f'"{data}"'
         elif type_ == 'RP':
+            for sub_record in [record_raw for record_raw in records_raw if record_raw['type'] in ('A', 'AAAA')]:
+                sub_type = sub_record['type']
+                sub_data = sub_record['data']
+
+                zone.append(f'{data}. 60 IN {sub_type} {sub_data}')
+
             data = f'{data}. .'
 
-        zone += f'{name}. 60 IN {type_} {data}\n'
+        zone.append(f'{name}. 60 IN {type_} {data}')
 
     print(zone)
 
-    server = DNSServer(ZoneResolver(zone), IP, PORT)
+    server = DNSServer(ZoneResolver('\n'.join(zone)), IP, PORT)
 
     try:
         server.start_thread()
@@ -42,7 +49,7 @@ def run():
             'dns_port': PORT,
         }
 
-        # print(problem.solve(solution))
+        print(problem.solve(solution))
     except KeyboardInterrupt:
         pass
 
