@@ -1,3 +1,4 @@
+# This script requires PORT to be forwarded for TCP trafic on your router to the machine running this script
 from ptftplib import tftpserver
 from support import hackattic
 import threading
