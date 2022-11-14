@@ -25,15 +25,10 @@ def run():
         data = record['data']
 
         if type_ == 'TXT':
+            name = records_by_type['RP']['data']
             data = f'"{data}"'
         elif type_ == 'RP':
-            for sub_record in [record_raw for record_raw in records_raw if record_raw['type'] in ('A', 'AAAA')]:
-                sub_type = sub_record['type']
-                sub_data = sub_record['data']
-
-                zone.append(f'{data}. 60 IN {sub_type} {sub_data}')
-
-            data = f'{data}. .'
+            data = f'. {data}.'
 
         zone.append(f'{name}. 60 IN {type_} {data}')
 
