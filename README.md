@@ -6,7 +6,7 @@ Source code of my solutions to the [hackattic](https://hackattic.com/) challenge
 
 ## Prerequisites
 
-Python >= 3.7.
+Python >= 3.8.
 
 ## Installation
 
